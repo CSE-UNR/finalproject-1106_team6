@@ -3,15 +3,16 @@
 #define Max_Row 20
 #define MAX_STRLENGTH 100
 #include <stdio.h>
-//done with Read from file
+
 char fileName[MAX_STRLENGTH];
 int rows, cols, userInput;
+
 void menu(int rows, int cols, char image[][Max_Row]);
 
 void editMenu(int rows, int cols, char image[][Max_Row]);
 void SaveToFile(int rows, int cols, char image[][Max_Row], char fileName[MAX_STRLENGTH]);
 void ReadFromFile(int rows, int cols, char image[][Max_Row], char *fileName);
-//done with crop
+
 void displayImage(int cols, int rows, char image[][Max_Row]);
 void Crop(int rows, int cols, char image[][Max_Row]);
 void Dim(int rows, int cols, char image[][Max_Row]);
@@ -46,9 +47,13 @@ void menu(int rows, int cols, char image[][Max_Row] ){
 			break;
 		}
 		case 1: {
+		
 			//LoadImage
+		
 			printf("What is the name of the image file? ");
+		
 			scanf(" %s", fileName);
+		
 			loadImage(fileName, rows, cols, image);
 			break;
 		}
@@ -115,9 +120,9 @@ void Crop(int rows, int cols, char image[][Max_Row])
 	
 	char NewImage[StartHeight][StartWidth];
 	
-	for(int CurrentRow = StartHeight; CurrentRow < NewHeight; CurrentRow++)
+	for(int CurrentRow = StartHeight, IndexRowNewImage = 0; CurrentRow < NewHeight; CurrentRow++, IndexRowNewImage++)
 	{
-		for(int CurrentCol = StartWidth; CurrentCol < Newwidth; CurrentCol++)
+		for(int CurrentCol = StartWidth, IndexColNewImage = 0; CurrentCol < Newwidth; CurrentCol++, IndexRowNewImage++)
 		{
 				NewImage[CurrentRow][CurrentCol] = image[CurrentRow][CurrentCol];
 			
@@ -126,7 +131,7 @@ void Crop(int rows, int cols, char image[][Max_Row])
 	}
 
 
-//just to display the array
+
 	for(int CurrentRow = 0; CurrentRow < NewHeight; CurrentRow++)
 	{
 		for(int CurrentCol = 0; CurrentCol < Newwidth; CurrentCol++)
@@ -183,7 +188,7 @@ void loadImage(char *fileName, int rows, int cols, char image[][Max_Row]){
 		printf("\nFile successfully loaded!\n\n");
 }
 
-//METHOD DONE! YAAY
+
 void SaveToFile(int rows, int cols, char image[][Max_Row], char fileName[MAX_STRLENGTH]){
 
 FILE* fileptr = fopen(fileName, "w");
@@ -229,96 +234,6 @@ fclose(fileptr);
 
 }
 
-else 
-{
-printf("Unable to save file!\n");
-
-}
-
-
-}
-
-
-void ReadFromFile(int cols, int rows, char image[][Max_Row], char *fileName){
-
-rows = 0;
-
-char fileIndex;
-
-FILE* filePtr = fopen(fileName, "r");
-
-if( filePtr != NULL)
-{
-	while(fscanf(filePtr, "%c", &fileIndex)==1)
-	{	
-		rows+=1;
-	}
-	
-	
-	
-	
-	printf("%d Row(s)\n", rows);
-	
-	fclose(filePtr);
-	 
-	 filePtr = fopen(fileName, "r");
-	
-	
-	char Number;
-	
-	int CurrentCol = 0;
-	
-	
-	for(int CurrentRow = 1; CurrentRow < rows; CurrentRow++)
-	{
-			CurrentCol = 0;
-			
-		while(Number != '\n' )
-		{
-		
-			fscanf(filePtr,"%c",&Number);
-		
-			switch(Number)
-				{
-					case '0':
-					image[CurrentRow][CurrentCol] = ' ';
-					
-					break;
-					
-					case'1':
-					image[CurrentRow][CurrentCol] = '.';
-					break;
-					
-					case'2':
-					image[CurrentRow][CurrentCol] = 'o';
-					break;
-					
-					case '3':
-					image[CurrentRow][CurrentCol] = 'O';
-					break;
-					
-					case'4':
-					image[CurrentRow][CurrentCol] = '0';
-					
-					
-					break;
-					
-				}	
-		
-		CurrentCol++;
-
-		}
-		
-		
-	}
-	
-	fclose(filePtr);
-	printf("Image successfully loaded!\n");
-}
-else 
-{
-	printf("Cannot open file, Try again");
-}
 }
 
 void Dim(int cols, int rows, char image[][Max_Row]){
@@ -338,7 +253,7 @@ void Dim(int cols, int rows, char image[][Max_Row]){
 				switch(NewImage[CurrentRow][CurrentCol])
 				{
 					case' ':
-					NewImage[CurrentRow][CurrentCol] = '0';
+					NewImage[CurrentRow][CurrentCol] = '.';
 					break;
 					
 					case'.':
@@ -382,6 +297,7 @@ void Brighten(int rows, int cols, char image[][Max_Row]){
 				switch(NewImage[CurrentRow][CurrentCol])
 				{
 					case' ':
+					
 					case'.':
 					NewImage[CurrentRow][CurrentCol] = '0';
 					break;
