@@ -14,7 +14,7 @@ void SaveToFile(int rows, int cols, char image[][Max_Row], char fileName[MAX_STR
 void ReadFromFile(int rows, int cols, char image[][Max_Row], char *fileName);
 
 void displayImage(int cols, int rows, char image[][Max_Row]);
-void Crop(int rows, int cols, char image[][Max_Row]);
+void Crop(int* rows, int* cols, char image[][Max_Row]);
 void Dim(int rows, int cols, char image[][Max_Row]);
 void Brighten(int rows, int cols, char image[][Max_Row]);
 void loadImage(char *fileName, int rows, int cols, char image[][Max_Row]);
@@ -81,7 +81,7 @@ void editMenu(int rows, int cols, char image[][Max_Row]){
 			break;
 		}
 		case 1: {
-			Crop(Max_Row, Max_Col, image);
+			Crop(&rows, &cols, image);
 			break;
 		}
 		case 2: {
@@ -108,42 +108,55 @@ void displayImage(int cols, int rows, char image[][Max_Row]){
 
 }
 
-void Crop(int rows, int cols, char image[][Max_Row])
+void Crop(int* rows, int* cols, char image[][Max_Row])
 {
-	int StartHeight = 0;
+	int topRow, bottomRow,  rightCol, leftCol;
+	
+	
+	int height = *rows;
+	int width = *cols; 
 
-	int StartWidth =0;
-	
-	
-	int NewHeight = 2;
-	int Newwidth = 2;
-	
-	char NewImage[StartHeight][StartWidth];
-	
-	for(int CurrentRow = StartHeight, IndexRowNewImage = 0; CurrentRow < NewHeight; CurrentRow++, IndexRowNewImage++)
+
+	printf("which column is the new rightmost column? ");
+	scanf("%d", &rightCol);
+
+	while(rightCol <= leftCol || rightCol > width)
 	{
-		for(int CurrentCol = StartWidth, IndexColNewImage = 0; CurrentCol < Newwidth; CurrentCol++, IndexRowNewImage++)
-		{
-				NewImage[CurrentRow][CurrentCol] = image[CurrentRow][CurrentCol];
-			
+		printf("incorrect value for a row. chose a number between %d and %d", leftCol, width);
+		scanf("%d", &rightCol);
+	}
+	
+	printf("which row is the new top row? ");
+	scanf("%d", &topRow);
+
+	while(topRow < 1 || topRow > height)
+	{
+		printf("incorrect value for a row. chose a number between 1 and  %d", height);
+		scanf("%d", &rightCol);
+	}	
 		
-		}
-	}
-
-
-
-	for(int CurrentRow = 0; CurrentRow < NewHeight; CurrentRow++)
+		
+		
+	printf("which row is the new bottom row? ");	
+	scanf("%d", &bottomRow);
+	while(bottomRow <= topRow || bottomRow > height)
 	{
-		for(int CurrentCol = 0; CurrentCol < Newwidth; CurrentCol++)
-		{
-					printf("%c", NewImage[CurrentRow][CurrentCol]);
-			
-		}
-		printf("\n");
+		printf("incorrect value for a row. chose a number between %d and %d", topRow, width);
+		scanf("%d", &rightCol);
 	}
+	
+	for(int hIndex = topRow -1; hIndex <=bottomRow-1; hIndex++)
+		{
+		
+			for(int wIndex = leftCol-1;wIndex <= rightCol; wIndex++)
+			{
+				printf("%c", image[hIndex][wIndex]);
+			}
+		}
 
+	*cols = rightCol;
+	*rows = bottomRow - 1 ;
 
-printf("---\n");
 }
 
 void loadImage(char *fileName, int rows, int cols, char image[][Max_Row]){
