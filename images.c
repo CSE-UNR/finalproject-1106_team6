@@ -11,23 +11,27 @@ void editMenu(int rows, int cols, char image[][Max_Col]);
 void SaveToFile(int rows, int cols, char image[][Max_Col], char fileName[MAX_STRLENGTH]);
 void ReadFromFile(int rows, int cols, char image[][Max_Col], char *fileName);
 //done with crop
+
+//displays image after loading 
 void displayImage(int cols, int rows, char image[][Max_Col]);
+//crops image
 void Crop(int rows, int cols, char image[][Max_Col]);
+//dims image by 1
 void Dim(int rows, int cols, char image[][Max_Col]);
+//brightens image by 1
 void Brighten(int rows, int cols, char image[][Max_Col]);
+//loads the image from file into array
 void loadImage(char *fileName, int rows, int cols, char image[][Max_Col]);
-void convert(char image[][Max_Col], int rows, int cols);
+//Array with dimensions for crop function
+void imageForCrop(int rows, int cols, char image[][Max_Col]);
 
 int main()
 {
 	int rows = Max_Row;
-	
 	int cols = Max_Col;
 	char image[Max_Row][Max_Col];
 	menu(rows, cols, image);
-	
-
-return 0;
+	return 0;
 }
 
 //menu (isabel)
@@ -68,15 +72,17 @@ void editMenu(int rows, int cols, char image[][Max_Col]){
 	int userInput;
 	char AddedfileName[MAX_STRLENGTH];
 	char user2;
-	printf("**EDITING**\n1: Crop Image\n2: Dim Image\n3: Brighten Image\n0: Return to main menu");
+	printf("\n**EDITING**\n1: Crop Image\n2: Dim Image\n3: Brighten Image\n0: Return to main menu");
 	printf("\nChoose from one of the options above: ");
 	scanf(" %d", &userInput);
+	printf("\n");
 	switch(userInput){
 		case 0: {
 			menu(Max_Row, Max_Col, image);
 			break;
 		}
 		case 1: {
+			imageForCrop(rows, cols, image);
 			Crop(Max_Row, Max_Col, image);
 			printf("Save image to file? (y/n) ");
 			scanf(" %c", &user2);
@@ -152,41 +158,69 @@ void displayImage(int cols, int rows, char image[][Max_Col]){
 //Crop image (Matthew)
 void Crop(int rows, int cols, char image[][Max_Col])
 {
-	int StartHeight = 0;
+	int topRow, bottomRow,  rightCol, leftCol;
+	
+	
+	int height = rows;
+	int width = cols; 
+	printf("The image you want to crop is 12 x 21.\n");
+	printf("The row and column values start in the upper lefthand corner.\n\n");
+	
+	printf("Which do you want to be the new left side? ");
+    scanf("%d", &leftCol);
+	printf("\n");
 
-	int StartWidth =0;
-	
-	
-	int NewHeight = 2;
-	int Newwidth = 2;
-	
-	char NewImage[StartHeight][StartWidth];
-	
-	for(int CurrentRow = StartHeight; CurrentRow < NewHeight; CurrentRow++)
+    while (leftCol < 1 || leftCol >= Max_Col) {
+        printf("Invalid column value. Choose a number between 1 and %d: ", Max_Col);
+        scanf("%d", &leftCol);
+    }
+
+	printf("Which column do you want to be the new right side? ");
+	scanf("%d", &rightCol);
+	printf("\n");
+
+	while(rightCol <= leftCol || rightCol > width)
 	{
-		for(int CurrentCol = StartWidth; CurrentCol < Newwidth; CurrentCol++)
-		{
-				NewImage[CurrentRow][CurrentCol] = image[CurrentRow][CurrentCol];
-			
+		printf("Invalid column value. Choose a number between %d and %d", leftCol, width);
+		scanf("%d", &rightCol);
+	}
+	
+	printf("Which row do you want to be the new top? ");
+	scanf("%d", &topRow);
+	printf("\n");
+
+	while(topRow < 1 || topRow > height)
+	{
+		printf("Invalid column value. Choose a number between %d and  %d", rightCol, height);
+		scanf("%d", &topRow);
+	}	
 		
-		}
-	}
+	printf("Which row do you want to be the new bottom? ");	
+	scanf("%d", &bottomRow);
+	printf("\n");
 
-
-//just to display the array
-	for(int CurrentRow = 0; CurrentRow < NewHeight; CurrentRow++)
+	while(bottomRow <= topRow || bottomRow > height)
 	{
-		for(int CurrentCol = 0; CurrentCol < Newwidth; CurrentCol++)
-		{
-					printf("%c", NewImage[CurrentRow][CurrentCol]);
-			
-		}
-		printf("\n");
+		printf("Invalid column value. Choose a number between %d and %d", topRow, width);
+		scanf("%d", &bottomRow);
 	}
+	
+	for(int hIndex = topRow -1; hIndex <=bottomRow-1; hIndex++)
+		{
+		
+			for(int wIndex = leftCol-1;wIndex <= rightCol; wIndex++)
+			{
+				printf("%c", image[hIndex][wIndex]);
+			}
+			printf("\n");
+		}
 
+	cols = rightCol;
+	rows = bottomRow - 1 ;
 
-printf("---\n");
 }
+
+
 
 //load image (isabel)
 void loadImage(char *fileName, int rows, int cols, char image[][Max_Col]){
@@ -266,7 +300,7 @@ for(int CurrentRow = 0; CurrentRow < rows; CurrentRow++)
 	}
 
 fclose(fileptr);
-printf("\nImage Successfully saved!\n");
+printf("\nImage Successfully saved!\n\n");
 }
 
 else 
@@ -277,89 +311,6 @@ printf("Unable to save file!\n");
 
 
 }
-
-
-/*void ReadFromFile(int cols, int rows, char image[][Max_Col], char *fileName){
-
-rows = 0;
-
-char fileIndex;
-
-FILE* filePtr = fopen(fileName, "r");
-
-if( filePtr != NULL)
-{
-	while(fscanf(filePtr, "%c", &fileIndex)==1)
-	{	
-		rows+=1;
-	}
-	
-	
-	
-	
-	printf("%d Row(s)\n", rows);
-	
-	fclose(filePtr);
-	 
-	 filePtr = fopen(fileName, "r");
-	
-	
-	char Number;
-	
-	int CurrentCol = 0;
-	
-	
-	for(int CurrentRow = 1; CurrentRow < rows; CurrentRow++)
-	{
-			CurrentCol = 0;
-			
-		while(Number != '\n' )
-		{
-		
-			fscanf(filePtr,"%c",&Number);
-		
-			switch(Number)
-				{
-					case '0':
-					image[CurrentRow][CurrentCol] = ' ';
-					
-					break;
-					
-					case'1':
-					image[CurrentRow][CurrentCol] = '.';
-					break;
-					
-					case'2':
-					image[CurrentRow][CurrentCol] = 'o';
-					break;
-					
-					case '3':
-					image[CurrentRow][CurrentCol] = 'O';
-					break;
-					
-					case'4':
-					image[CurrentRow][CurrentCol] = '0';
-					
-					
-					break;
-					
-				}	
-		
-		CurrentCol++;
-
-		}
-		
-		
-	}
-	
-	fclose(filePtr);
-	printf("Image successfully loaded!\n");
-}
-else 
-{
-	printf("Cannot open file, Try again");
-}
-}*/
 
 //Dim (isabel)
 void Dim(int cols, int rows, char image[][Max_Col]){
@@ -419,7 +370,8 @@ void Brighten(int rows, int cols, char image[][Max_Col]){
 		{
 				switch(NewImage[CurrentRow][CurrentCol])
 				{
-		
+					case ' ':
+					NewImage[CurrentRow][CurrentCol] = '.';
 					case'.':
 					NewImage[CurrentRow][CurrentCol] = 'o';
 					break;
@@ -438,3 +390,22 @@ void Brighten(int rows, int cols, char image[][Max_Col]){
 				displayImage(rows, cols, NewImage);
 	
 		}
+
+	void imageForCrop(int rows, int cols, char image[][Max_Col]){
+		char cropImage[Max_Row][Max_Col];
+		for(int CurrentRow = 0; CurrentRow < Max_Row; CurrentRow++)
+		{
+			for(int CurrentCol = 0; CurrentCol < Max_Col; CurrentCol++)
+			{
+				cropImage[CurrentRow][CurrentCol] = image[CurrentRow][CurrentCol];
+			}
+		}
+		cropImage[0][1] = '1';
+		cropImage[1][0] = '1';
+		cropImage[Max_Row-1][0] = '1';
+		cropImage[Max_Row-1][1] = '2';
+		cropImage[0][Max_Col-1] = '1';
+		cropImage[0][Max_Col-2] = '2';
+		displayImage(cols, rows, cropImage);
+		
+	}
